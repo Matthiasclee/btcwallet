@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
 require './wallet.rb'
 
 def cli_interface(wallet)
