@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default)
+require './child_wallet.rb'
 
 
 class Wallet
@@ -21,8 +22,8 @@ class Wallet
   def generate_children(number, depth=1)
     children = []
     number.times do |num|
-      node = @master.node_for_path "m/#{num}/#{depth}"
-      children << node
+      child = Child_wallet.new(@master, num, depth)
+      children << child
     end
 
     return children
