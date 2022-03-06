@@ -6,6 +6,7 @@ puts "2) Load wallet"
 option = $stdin.gets.chomp.to_i
 
 if option == 1
+
   wallet = Wallet.new
 
   print "Do you want to save this wallet to a file? [Y/n] "
@@ -17,6 +18,11 @@ if option == 1
   end
 
 elsif option == 2
+  
+  print "Wallet file: "
+  file = $stdin.gets.chomp
+  
+  wallet = Wallet.new(from: :seedfile, seedfile: file)
 
 else
   puts "Invalid option"
