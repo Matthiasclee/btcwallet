@@ -3,18 +3,28 @@ GEM
   specs:
     chunky_png (1.4.0)
     ffi (1.15.5)
+    io-wait (0.2.1)
     money-tree (0.10.0)
       ffi
+    net-http (0.2.0)
+      net-protocol
+      uri
+    net-protocol (0.1.2)
+      io-wait
+      timeout
     rqrcode (2.1.1)
       chunky_png (~> 1.0)
       rqrcode_core (~> 1.0)
     rqrcode_core (1.2.0)
+    timeout (0.2.0)
+    uri (0.11.0)
 
 PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
   money-tree
+  net-http
   rqrcode
 
 BUNDLED WITH
