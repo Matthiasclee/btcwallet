@@ -10,6 +10,8 @@ class Child_wallet
     @depth = depth
 
     @node = @master.node_for_path "m/#{number}/#{depth}"
+
+    @btc_ruby_key = Bitcoin::Key.from_base58(@node.private_key.to_s)
   end
 
   def private_key

@@ -11,11 +11,13 @@ class Wallet
       @master_private_key = @master.private_key.to_s
       @master_address = @master.to_address
       @master_seed = @master.seed
+      @btc_ruby_key = Bitcoin::Key.from_base58(@master_private_key)
     elsif opts[:from] == :new
       @master = MoneyTree::Master.new
       @master_private_key = @master.private_key.to_s
       @master_address = @master.to_address
       @master_seed = @master.seed
+      @btc_ruby_key = Bitcoin::Key.from_base58(@master_private_key)
     end
   end
 
