@@ -8,7 +8,8 @@ def cli_interface(wallet)
     1 => "Wallet address",
     2 => "Private key",
     3 => "Generate child wallet",
-    4 => "Generate QR code for address"
+    4 => "Generate QR code for address",
+    5 => "Get balance of wallet"
   }
 
   loop do
@@ -44,6 +45,12 @@ def cli_interface(wallet)
       qr = RQRCode::QRCode.new(wallet.address).to_s.gsub("x", "█")
 
       puts qr
+    end
+
+    if option == 5
+      response = Net::HTTP.get(URI("https://blockchain.info/balance?active=#{wallet.address}"))
+      balance_satoshis = JSON.parse(response)[wallet.address]["final_balance"].to_i.to_f
+      puts "\n#{balance_satoshis/100000000.to_f} BTC"
     end
   end
 end
