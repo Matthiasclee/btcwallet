@@ -5,6 +5,7 @@ require './wallet.rb'
 
 def cli_interface(wallet)
   options = {
+    99 => "Exit",
     1 => "Wallet address",
     2 => "Private key",
     3 => "Generate child wallet",
@@ -18,6 +19,8 @@ def cli_interface(wallet)
     end
 
     option = $stdin.gets.chomp.to_i
+
+    exit if option == 99
 
     if option == 1
       puts "\n#{wallet.address}"
