@@ -7,7 +7,8 @@ def cli_interface(wallet)
   options = {
     1 => "Wallet address",
     2 => "Private key",
-    3 => "Generate child wallet"
+    3 => "Generate child wallet",
+    4 => "Generate QR code for address"
   }
 
   loop do
@@ -37,6 +38,12 @@ def cli_interface(wallet)
       puts
       puts child.address
       puts child.private_key
+    end
+
+    if option == 4
+      qr = RQRCode::QRCode.new(wallet.address).to_s.gsub("x", "█")
+
+      puts qr
     end
   end
 end
