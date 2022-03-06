@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.15.5)
+    money-tree (0.10.0)
+      ffi
+
+PLATFORMS
+  x86_64-darwin-20
+
+DEPENDENCIES
+  money-tree
+
+BUNDLED WITH
+   2.3.8
