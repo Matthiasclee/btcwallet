@@ -63,7 +63,7 @@ class Wallet
         t.input do |i|
           rawtx = Net::HTTP.get(URI("https://blockchain.info/rawtx/#{tx[:hash]}?format=hex"))
 
-          i.prev_out Bitcoin::Protocol::Tx.new(rawtx)
+          i.prev_out Bitcoin::Protocol::Tx.new([rawtx].pack('H*'))
 
           i.prev_out_index tx[:num]
 
@@ -74,7 +74,7 @@ class Wallet
       # add an output that sends some bitcoins to another address
       t.output do |o|
         o.value 50000000 # 0.5 BTC in satoshis
-        o.script {|s| s.recipient "mugwYJ1sKyr8EDDgXtoh8sdDQuNWKYNf88" }
+        o.script {|s| s.recipient "1Q8gxrq8uitsWSgZBqV9mfTHzK4vBKvwz" }
       end
 
       # add another output spending the remaining amount back to yourself
