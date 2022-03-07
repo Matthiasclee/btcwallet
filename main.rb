@@ -58,7 +58,16 @@ def cli_interface(wallet)
     end
 
     if option == 6
-      puts wallet.create_tx(fee: 1, amount: 1)
+      print "Amount of BTC to send: "
+      amount = $stdin.gets.chomp.to_f
+
+      print "Miner Fee: "
+      fee = $stdin.gets.chomp.to_f
+
+      print "Receiving Address: "
+      to = $stdin.gets.chomp
+
+      puts wallet.create_tx(amount: amount, fee: fee, to: to)
     end
   end
 end

@@ -38,9 +38,11 @@ class Wallet
   end
 
   def create_tx(opts)
+    response = Net::HTTP.get(URI("https://blockchain.info/balance?active=#{self.address}"))
+    balance_satoshis = JSON.parse(response)[self.address]["final_balance"].to_i.to_f
+
     addrdata = Net::HTTP.get(URI("https://blockchain.info/rawaddr/#{self.address}")) 
     transactions = JSON.parse(addrdata)["txs"]
-    amount_found = 0
 
     viable_txns = []
 
@@ -48,46 +50,45 @@ class Wallet
       hash = txn["hash"]
       
       txn["out"].each do |out|
-        if out["addr"] == self.address && !out["spent"] && amount_found < opts[:amount]
+        if out["addr"] == self.address
           viable_txns << {hash: hash, num: out["n"]}
-          amount_found = amount_found + out["value"]
         end
       end
     end
+
+    tx = viable_txns[viable_txns.length-1]
 
     key = Bitcoin::Key.from_base58(self.private_key)
 
     new_tx = build_tx do |t|
 
-      viable_txns.each do |tx|
-        t.input do |i|
-          rawtx = Net::HTTP.get(URI("https://blockchain.info/rawtx/#{tx[:hash]}?format=hex"))
+      t.input do |i|
+        rawtx = Net::HTTP.get(URI("https://blockchain.info/rawtx/#{tx[:hash]}?format=hex"))
 
-          i.prev_out Bitcoin::Protocol::Tx.new([rawtx].pack('H*'))
+        i.prev_out Bitcoin::Protocol::Tx.new([rawtx].pack('H*'))
 
-          i.prev_out_index tx[:num]
+        i.prev_out_index tx[:num]
 
-          i.signature_key key
-        end
+        i.signature_key key
       end
 
       # add an output that sends some bitcoins to another address
       t.output do |o|
-        o.value 50000000 # 0.5 BTC in satoshis
-        o.script {|s| s.recipient "1Q8gxrq8uitsWSgZBqV9mfTHzK4vBKvwz" }
+        o.value (opts[:amount] * 100000000.0).to_i
+        o.script {|s| s.recipient opts[:to] }
       end
 
       # add another output spending the remaining amount back to yourself
       # if you want to pay a tx fee, reduce the value of this output accordingly
       # if you want to keep your financial history private, use a different address
       t.output do |o|
-        o.value 49000000 # 0.49 BTC, leave 0.01 BTC as fee
+        o.value (balance_satoshis - (opts[:amount] * 100000000.0) - (opts[:fee].to_f)).to_i
         o.script {|s| s.recipient key.addr }
       end
 
     end
 
-    return new_tx.to_json
+    return new_tx.to_payload.bth
   end
 
   def private_key
