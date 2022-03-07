@@ -46,7 +46,7 @@ def cli_interface(wallet)
     end
 
     if option == 4
-      qr = RQRCode::QRCode.new(wallet.address).to_s.gsub("x", "█")
+      qr = RQRCode::QRCode.new(wallet.address).to_s.gsub("x", "██").gsub(" ", "  ")
 
       puts qr
     end
