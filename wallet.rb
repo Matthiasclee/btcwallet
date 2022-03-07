@@ -42,7 +42,7 @@ class Wallet
     balance_satoshis = JSON.parse(response)[self.address]["final_balance"].to_i.to_f
 
     addrdata = Net::HTTP.get(URI("https://blockchain.info/rawaddr/#{self.address}")) 
-    transactions = JSON.parse(addrdata)["txs"]
+    transactions = JSON.parse(addrdata)["txs"].reverse
 
     viable_txns = []
 
