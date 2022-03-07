@@ -46,30 +46,33 @@ class Wallet
 
     viable_txns = []
 
+    amount_found = 0.0
+
     transactions.each do |txn|
       hash = txn["hash"]
       
       txn["out"].each do |out|
-        if out["addr"] == self.address
+        if out["addr"] == self.address && !out["spent"] && amount_found.to_f < opts[:amount]
           viable_txns << {hash: hash, num: out["n"]}
+          amount_found = amount_found + out["value"].to_f
         end
       end
     end
-
-    tx = viable_txns[viable_txns.length-1]
 
     key = Bitcoin::Key.from_base58(self.private_key)
 
     new_tx = build_tx do |t|
 
-      t.input do |i|
-        rawtx = Net::HTTP.get(URI("https://blockchain.info/rawtx/#{tx[:hash]}?format=hex"))
+      viable_txns.each do |tx|
+        t.input do |i|
+          rawtx = Net::HTTP.get(URI("https://blockchain.info/rawtx/#{tx[:hash]}?format=hex"))
 
-        i.prev_out Bitcoin::Protocol::Tx.new([rawtx].pack('H*'))
+          i.prev_out Bitcoin::Protocol::Tx.new([rawtx].pack('H*'))
 
-        i.prev_out_index tx[:num]
+          i.prev_out_index tx[:num]
 
-        i.signature_key key
+          i.signature_key key
+        end
       end
 
       # add an output that sends some bitcoins to another address
@@ -82,7 +85,7 @@ class Wallet
       # if you want to pay a tx fee, reduce the value of this output accordingly
       # if you want to keep your financial history private, use a different address
       t.output do |o|
-        o.value (balance_satoshis - (opts[:amount] * 100000000.0) - (opts[:fee].to_f)).to_i
+        o.value (amount_found - (opts[:amount] * 100000000.0) - (opts[:fee].to_f)).to_i
         o.script {|s| s.recipient key.addr }
       end
 
