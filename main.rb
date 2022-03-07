@@ -10,7 +10,8 @@ def cli_interface(wallet)
     2 => "Private key",
     3 => "Generate child wallet",
     4 => "Generate QR code for address",
-    5 => "Get balance of wallet"
+    5 => "Get balance of wallet",
+    6 => "New TX"
   }
 
   loop do
@@ -54,6 +55,10 @@ def cli_interface(wallet)
       response = Net::HTTP.get(URI("https://blockchain.info/balance?active=#{wallet.address}"))
       balance_satoshis = JSON.parse(response)[wallet.address]["final_balance"].to_i.to_f
       puts "\n#{balance_satoshis/100000000.to_f} BTC"
+    end
+
+    if option == 6
+      puts wallet.create_tx(fee: 1, amount: 1)
     end
   end
 end
