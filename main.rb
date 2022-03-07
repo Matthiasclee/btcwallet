@@ -54,7 +54,8 @@ def cli_interface(wallet)
     if option == 5
       response = Net::HTTP.get(URI("https://blockchain.info/balance?active=#{wallet.address}"))
       balance_satoshis = JSON.parse(response)[wallet.address]["final_balance"].to_i.to_f
-      puts "\n#{balance_satoshis/100000000.to_f} BTC"
+      bal = balance_satoshis/100000000.to_f
+      puts "\n#{"%.8f" % bal} BTC"
     end
 
     if option == 6
