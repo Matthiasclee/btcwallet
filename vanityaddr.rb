@@ -9,11 +9,13 @@ loop do
   wallet = Wallet.new
   addr = wallet.address
 
-  puts addr if ARGV.include?('--printall')
+  print "\r"+addr if ARGV.include?('--printall')
   
   if addr.match?(match)
     key = wallet.private_key
     seed = wallet.seed
+
+    puts
     
     puts "Match found!"
 
