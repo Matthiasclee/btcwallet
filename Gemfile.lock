@@ -28,7 +28,7 @@ GEM
       io-wait
       timeout
     rake (13.0.6)
-    rbtext (0.0.5)
+    rbtext (0.0.6)
     rqrcode (2.1.1)
       chunky_png (~> 1.0)
       rqrcode_core (~> 1.0)
