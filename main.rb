@@ -16,7 +16,7 @@ def cli_interface(wallet)
 
   loop do
     options.keys.each do |opt|
-      puts "#{opt}) #{options[opt]}"
+      puts "_.c:light-green._#{opt}) _.f:reset._#{options[opt]}".to_ftext
     end
 
     option = $stdin.gets.chomp.to_i
@@ -24,11 +24,11 @@ def cli_interface(wallet)
     exit if option == 99
 
     if option == 1
-      puts "\n#{wallet.address}"
+      puts "\n_.c:light-blue.__.f:bold._#{wallet.address}".to_ftext
     end
     
     if option == 2
-      puts "\n#{wallet.private_key}"
+      puts "\n_.c:green.__.f:faint._#{wallet.private_key}".to_ftext
     end
 
     if option == 3
@@ -40,9 +40,11 @@ def cli_interface(wallet)
 
       child = wallet.generate_child number, depth
 
-      puts
-      puts child.address
+      puts R::C.color :light_blue 
+      puts "_.f:bold._#{child.address}".to_ftext
+      print (R::C.color :green) + (R::F.faint)
       puts child.private_key
+      print R::F.reset
     end
 
     if option == 4
@@ -55,7 +57,7 @@ def cli_interface(wallet)
       response = Net::HTTP.get(URI("https://blockchain.info/balance?active=#{wallet.address}"))
       balance_satoshis = JSON.parse(response)[wallet.address]["final_balance"].to_i.to_f
       bal = balance_satoshis/100000000.to_f
-      puts "\n#{"%.8f" % bal} BTC"
+      puts "\n_.c:light-blue._#{"%.8f" % bal}_.f:reset._ BTC".to_ftext
     end
 
     if option == 6
