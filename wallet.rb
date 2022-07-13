@@ -52,7 +52,7 @@ class Wallet
       hash = txn["hash"]
       
       txn["out"].each do |out|
-        if out["addr"] == self.address && !out["spent"] && amount_found.to_f < opts[:amount]
+        if out["addr"] == self.address && !out["spent"] && amount_found.to_f < opts[:amount] + opts[:fee]
           viable_txns << {hash: hash, num: out["n"]}
           amount_found = amount_found + out["value"].to_f
         end
